@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="You can now be able to shop at the market for clothes and pay later using Marketgo. This platform gives you the merit of not loosing your valuables while shopping in a crowded market. Signup and enjoy using Marketgo.">
+    <meta name="keywords" content="mpesa, market, mitumba, second hand, cloth, pay later, credit, shop">
+    <title>Marketgo</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/912e452282.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="main-container auth-page">
+        <%- include('partials/messages') %>
+        <form action="/signup" method="POST">
+            <h2>Sign up here</h2>
+            <br>
+            <div class="field">
+                <label for="uemail">Email</label>
+                <br>
+                <!--<p><i class="fa fa-circle-exclamation"></i> Key in the money you plan to use below.</p>-->
+                <input type="email" name="uemail" id="uemail" placeholder="e.g.johnjuma@gmail.com" style="font-weight: 500; font-size:16px;">
+            </div>
+            <br>
+
+            <div class="field">
+                <label for="uname">Name</label>
+                <br>
+                <!--<p><i class="fa fa-circle-exclamation"></i> Key in the money you plan to use below.</p>-->
+                <input type="text" name="uname" id="uname" placeholder="e.g. John Juma" style="font-weight: 500; font-size:16px;">
+            </div>
+            <br>
+
+            <div class="field">
+                <label for="userGender">Gender</label>
+                <br>
+                <!--<p><i class="fa fa-circle-exclamation"></i> Key in the money you plan to use below.</p>-->
+                <select name="userGender" id="userGender">
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="none">Prefer not to say</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="userType">Type of User</label>
+                <br>
+                <!--<p><i class="fa fa-circle-exclamation"></i> Key in the money you plan to use below.</p>-->
+                <select name="userType" id="userType">
+                    <option value="customer">Customer</option>
+                    <option value="retailer">Trader</option>
+                    <option value="rider">Rider</option>
+                </select>
+            </div>
+            <br>
+
+            <div class="field">
+                <label for="uphone">Phone</label>
+                <br>
+                <!--<p><i class="fa fa-circle-exclamation"></i> Key in the money you plan to use below.</p>-->
+                <input type="text" name="uphone" id="uphone" placeholder="e.g. 254715765934" style="font-weight: 500; font-size:16px;">
+            </div>
+            <br>
+
+            <div class="field">
+                <label for="uaddr">Address</label>
+                <br>
+                <!--<p><i class="fa fa-circle-exclamation"></i> Key in the money you plan to use below.</p>-->
+                <input type="text" name="uaddr" id="uaddr" placeholder="e.g. Road, Street, Building, Estate, City" style="font-weight: 500; font-size:16px;">
+            </div>
+            <br>
+
+            <div class="field">
+                <label for="upass">Password</label>
+                <br>
+                <!--<p><i class="fa fa-circle-exclamation"></i> Key in the money you plan to use below.</p>-->
+                <input type="password" name="upass" id="upass">
+            </div>
+            <br>
+
+            <button class="btnCheckOut" type="submit">Sign up</button>
+        </form>
+        
+    </div>
+</body>
+</html>

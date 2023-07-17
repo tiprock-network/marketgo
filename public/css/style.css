@@ -1,0 +1,276 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+*{
+    margin: 0;
+}
+:root{
+    --rosered-dark:rgb(202, 36, 36);
+    --rosered-light:rgb(219, 56, 56);
+    --green-grass:rgb(18, 139, 93);
+    --green-leaf:rgb(40, 163, 116);
+}
+/*fonts*/
+/*
+font-family: 'Lato', sans-serif;
+font-family: 'Montserrat', sans-serif;/*body
+font-family: 'Open Sans', sans-serif;/*heading 1 or 2 for cards
+font-family: 'Poppins', sans-serif;/*heading 1 or 2 for cards
+font-family: 'Rubik', sans-serif; /*notifications
+*/
+
+body{
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    color: #333;
+}
+.main-container{
+    width: 60%;
+    /*border: 1px solid #ccc;*/
+    margin-top: 40px;
+    padding: 15px;
+    transform: translateX(30%);
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 10px;
+}
+
+.main-container form{
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    padding: 30px;
+    transform: translateX(50%);
+}
+
+/*for a retailer's custid form*/
+.custid-form form{
+    transform: translateX(0);
+    border: none;
+    padding-left: 5px;
+    padding-top: 5px;
+    width: 100%;
+}
+.main-container form>.field label{
+    font-size: 20px;
+    margin-bottom: 20px;
+    font-weight: 800;
+    color: var(--green-grass);
+}
+.main-container form>.field input{
+    outline: none;
+    padding: 10px 20px;
+    margin: 5%;
+    margin-left: 0;
+    width: 90%;
+    background-color: #e9e9e9;
+    color: #7a7979;
+    border: none;
+    border-radius: 15px;
+   font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    
+}
+/*for a retailer's custid form*/
+.custid-form form> .transaction-card input{
+    transform: translateX(0);
+    outline: none;
+    padding: 10px 20px;
+    margin: 5%;
+    margin-left: 0;
+    width: 90%;
+    background-color: #e9e9e9;
+    color: #7a7979;
+    border: none;
+    border-radius: 15px;
+   font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.main-container form>.field input::-webkit-outer-spin-button{
+    -webkit-appearance: none; /* Safari, Chrome, and Opera */
+    margin: 0; /* Remove the margin */
+}
+.main-container form>.field input::-webkit-inner-spin-button{
+    -webkit-appearance: none; /* Safari, Chrome, and Opera */
+    margin: 0; /* Remove the margin */
+}
+.main-container form>.field p{
+    font-size: 14px;
+    color: #7a7979;
+}
+
+.main-container form>.field select{
+    outline: none;
+    padding: 10px 20px;
+    margin: 5%;
+    margin-left: 0;
+    width: 60%;
+    background-color: #e9e9e9;
+    color: #7a7979;
+    border: none;
+    border-bottom: 1px solid var(--green-grass);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.auth-page form>.field label{
+    font-size: 18px;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: var(--green-grass);   
+}
+
+.auth-page form h2{
+    color: var(--green-grass);
+}
+
+.auth-page{
+    width: 50%;
+    display: block;
+    transform: translateX(40%);
+}
+.auth-page form{
+    transform: translateX(10%);
+}
+
+.side-section{
+    /*width: 90%;*/
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 25px;
+}
+.side-section h1{
+    color: var(--green-grass);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 25px;
+    margin-bottom: 10px;
+}
+
+.side-section:nth-child(1) table td{
+    padding: 10px;
+    padding-left: 0px;
+}
+.side-section:nth-child(1) table th{
+    padding: 10px;
+    padding-left: 0px;
+}
+.side-section:nth-child(1) p{
+    font-family: 'Rubik', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+}
+
+.side-section:nth-child(1){
+    background-color: var(--rosered-dark);
+    background-image: linear-gradient(rgb(20, 153, 102) ,rgb(3, 71, 43));
+    color: #fff;
+    border: none;
+}
+
+.side-section:nth-child(2){
+    background-color: rgb(18, 139, 93);
+    color: #fff;
+    border-bottom: none;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    
+}
+.trader{
+    margin-top: 1%;
+    grid-auto-rows: min-content(0,auto);
+}
+.trader> .side-section:nth-child(2){
+    background-color: #fff;
+    height: 100%;
+}
+.section-menu{
+    text-align: left;
+}
+.section-menu a{
+    text-decoration: none;
+    color: #fff;
+}
+.section-menu p{
+    display: inline-block;
+    margin: 5px;
+    font-size: 14px;
+    font-weight: 600;
+}
+.side-section:nth-child(4){
+    border-top: none;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.side-section:nth-child(3){
+    border: none;
+}
+
+
+.transaction-card{
+    box-shadow: 0px 2px 4px 2px #ccc;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    padding: 15px;
+    /*padding-top: 10px;
+    padding-bottom: 10px;*/
+}
+
+.transaction-card p{
+    font-size: 13px;
+    font-weight: 600;
+    color: #7a7979;
+}
+
+
+.logo{
+    margin: 10px;
+}
+
+.logo img{
+    height: auto;
+    width: 90px;
+    object-fit: cover;
+}
+
+.fa-circle-check{
+    color: rgb(18, 139, 93);
+}
+.fa-list-check{
+    font-size: 25px;
+}
+.fa-circle-minus{
+    color: var(--rosered-light);
+}
+.btnCheckOut{
+    width: 100%;
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    padding: 10px 20px;
+    background-color: rgb(18, 139, 93);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    cursor: pointer;
+    
+    
+}
+.btnCheckOut:hover{
+    background-color: var(--green-leaf);
+}
+
+.btnCheckOut:active{
+    animation: bounce 2s;
+}
+
+@keyframes bounce {
+    0%, 70%, 100% {
+        transform: translateY(0);
+      }
+      35% {
+        transform: translateY(-20px);
+      }
+}

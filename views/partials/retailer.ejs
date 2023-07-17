@@ -1,0 +1,104 @@
+<div class="main-container trader">
+    <!--<div class="logo">
+            <img src="./images/marketgologo.png" alt="">
+        </div>
+        <h1>Market Go. Buy. Pay Later</h1>-->
+
+    
+
+    <div class="side-section">
+        <h2><%= name %></h2>
+        <br>
+       <div class="section-menu">
+            <a href="/dashboard/commitfunds"><p style="font-size: 12px;"><i class="fa fa-receipt"></i> <br> Transactions</p></a>
+            <p style="font-size: 12px;"><i class="fa fa-ellipsis"></i> <br> Options</p>
+            <p style="font-size: 12px;"><i class="fa fa-eye-slash"></i> <br> <%= id %></p>
+            <p style="font-size: 12px;"><i class="fa fa-pencil"></i> <br> View orders</p>
+            <br>
+        <table>
+            <thead>
+                <tr>
+                    <th><i class="fa fa-money-check"></i> Unpaid</th>
+                    <th><i class="fa fa-coins"></i> Income</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>KES. 5,230.00</td>
+                    <td>KES. <%= budget %></td>
+                </tr>
+            </tbody>
+        </table>
+       </div>
+        
+    </div>
+
+    <div class="side-section">
+        <h1>History</h1>
+        <!--previous transaction sections-->
+        <% if(orders.length>0){ %>
+           <% orders.forEach(function(order) { %>
+            <% if(order.isSigned){ %>
+                <div class="transaction-card">
+                    <% const formatter = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); %>
+                    <p><i class="fa fa-circle-check"> </i> KES. <%= formatter.format(order.cost) %> - <%= order.custId %></p>
+                    
+                </div>
+            <% } %>
+            <% }) %>
+        <% }else{ %>
+            <div class="transaction-card" style="box-shadow: none;">
+                <p>No payments</p>
+            </div>
+        <% } %>
+        <!--end of transaction sections-->
+        
+
+        
+    </div>
+
+    <div class="side-section custid-form">
+        <h1>Make Order</h1>
+        <p>Enter the cutomer transaction id, price and save order for packaging and delivery.</p>
+        <br>
+        <!--previous transaction sections-->
+        <form action="/order" method="POST">
+            <div class="transaction-card">
+                <input type="text" name="custid" id="custid" placeholder="e.g. utr-kOP254...">
+            </div>
+            <div class="transaction-card">
+                <input type="number" name="cost" id="cost" placeholder="e.g. 1200">
+            </div>
+            <button class="btnCheckOut">Add Order</button>
+        </form>
+        <!--end of transaction sections-->
+
+       
+
+        
+    </div> 
+
+    <div class="side-section">
+        <% if(orders.length>0){ %>
+            <h1>Due payments</h1>
+           <% orders.forEach(function(order) { %>
+            <% if(!order.isSigned){ %>
+            <div class="transaction-card">
+                <% const formatter = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); %>
+                <p><i class="fa fa-circle-minus"> </i> KES. <%= formatter.format(order.cost) %> - <%= order.custId %></p>
+            </div>
+            <% } %>
+            <% }) %>
+        <% }else{ %>
+            <div class="transaction-card" style="box-shadow: none;">
+                <p>No due payment</p>
+            </div>
+        <% } %>
+    
+        <button class="btnCheckOut">Clear overdue</button>
+    </div>
+
+   
+    
+</div>
