@@ -1,13 +1,22 @@
 const express=require('express')
 const router=express.Router()
+//import request library
+const request=require('request')
 //acquire user model
 const User=require('../model/userModel')
 //the order model
 const Order=require('../model/orderModel')
+//import moment
+const moment=require('moment')
 //bcrypt is used to hash password
 const bcrypt=require('bcryptjs')
 const passport=require('passport')
 const {ensureAuthenticated}=require('../config/auth')//protects routes
+//Mpesa Credentials
+const CONSUMER_KEY=process.env.CONSUMER_KEY
+const CONSUMER_SECRET=process.env.CONSUMER_SECRET
+const SHORT_CODE=process.env.SHORT_CODE
+const MPESA_PASS_KEY=process.env.MPESA_PASS_KEY
 
 //create route to dashboard
 router.get('/',ensureAuthenticated,async (req,res)=>{
@@ -21,6 +30,7 @@ router.get('/',ensureAuthenticated,async (req,res)=>{
           return sum;
     }, 0)
     let firstname=(req.user.userName).split(' ')[0]
+    const message = req.query.message;//message from transaction
     res.render('dashboard',{
         id:req.user.userTransactionId,
         fname:firstname, name:req.user.userName, 
@@ -28,7 +38,8 @@ router.get('/',ensureAuthenticated,async (req,res)=>{
         userType:req.user.userType,
         orders:order,
         custPurchases:orderPurchase,
-        sum:totalCost
+        sum:totalCost,
+        transactionMsg:message
     });
 })
 
@@ -159,10 +170,90 @@ router.post('/commitfunds',ensureAuthenticated,async (req,res)=>{
    }
 })
 
-router.get('/checkout',(req,res)=>{
-    res.send('<h1>Checkout Page</h1>')
-    res.end()
+//Mpesa Checkout
+router.get('/pay',ensureAuthenticated, async (req,res)=>{
+    
+    //get the data from database
+    const order=await Order.find({custId:req.user.userTransactionId});
+    const totalCost = order.reduce((sum, order) =>{
+        if (!order.isSigned) {
+            return (sum + parseInt(order.cost));
+          }
+          return sum;
+    }, 0)
+    console.log(totalCost)
+   
+    //STK PUSH
+    generateAccessToken()
+    .then((access_token)=>{
+        const URL='https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest'
+        const Auth='Bearer '+access_token
+        let timestamp=moment().format('YYYYMMDDHHmmss')
+        //generate password
+        const password= new Buffer.from(SHORT_CODE+MPESA_PASS_KEY+timestamp).toString('base64')
+        //call back URL must be https
+        //PartyA should be entity collecting the money to disburse it
+        request({
+            url:URL,
+            method:'POST',
+            headers:{
+                Authorization:Auth
+            },
+            json:{
+                BusinessShortCode: SHORT_CODE,
+                Password: password,
+                Timestamp: timestamp,
+                TransactionType: "CustomerPayBillOnline",
+                Amount: totalCost,
+                PartyA: "254758885970",
+                PartyB: "174379",
+                PhoneNumber: req.user.userPhone,
+                CallBackURL: process.env.CALLBACK_URL,
+                AccountReference: "Market Go",
+                TransactionDesc: "Mitumba Package" 
+            }
+        },async(error,response,body)=>{
+            if(error) reject(error);
+            else{
+                
+                try{
+                    // Check if the ResponseCode is "0" for success
+                    if (body.ResponseCode === "0") {
+                        // Update the isSigned field to true
+                        for (const o of order) {
+                        o.isSigned = true;
+                        await o.save();
+                        }
+                        res.redirect('/dashboard')
+                    } else {
+                        // Handle the case where ResponseCode is not "0"
+                        // For example, you might want to perform some error handling or logging
+                        //put this in a beutiful page
+                        const message = `Transaction failed. ${body.errorMessage}`;
+                        res.redirect(`/dashboard?message=${encodeURIComponent(message)}`)
+                        console.log(body)
+                    }
+                }catch(err){
+                    console.log(error)
+                }
+                //this response contains information of transaction
+                //save part of this in the database later in orders
+                
+            }
+        })
+
+    })
 })
+
+/*router.get('/accessToken',(req,res)=>{
+    generateAccessToken()
+    .then((access_token)=>{
+        res.send('Access Token: '+access_token);
+        res.end()
+    })
+    .catch(console.log())
+})*/
+
 
 
 
@@ -182,6 +273,29 @@ router.get('/logout',(req,res)=>{
     req.flash('success_msg','You are now logged out.')
     res.redirect('/')
 })
+
+//generate Mpesa Access token
+function generateAccessToken(){
+    const consumerKey=CONSUMER_KEY
+    const consumerSecret=CONSUMER_SECRET
+    const URL='https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials'
+    const Auth='Basic '+new Buffer.from(consumerKey+':'+consumerSecret).toString('base64')
+    return new Promise((response,reject)=>{
+        request({
+            url:URL,
+            headers:{
+                Authorization: Auth
+            },
+        },function (error,res,body){
+            let jsonBody=JSON.parse(body);
+            if(error) reject(error);
+            else{
+                const access_token=jsonBody.access_token
+                response(access_token);
+            }
+        })
+    })
+}
 
 
 //export router to server.js
