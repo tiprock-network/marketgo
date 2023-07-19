@@ -44,21 +44,27 @@
         <p>A list of top previous transactions</p>
         <br>
         <!--previous transaction sections-->
-        <% if(custPurchases.length>0){ %>
-            <% custPurchases.forEach(function(order) { %>
-             <% if(order.isSigned){ %>
-                 <div class="transaction-card">
-                     <% const formatter = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); %>
-                     <p><i class="fa fa-circle-check"> </i> KES. <%= formatter.format(order.cost) %> - <%= order.retailerName %></p>
-                     
-                 </div>
-             <% } %>
-             <% }) %>
-         <% }else{ %>
-             <div class="transaction-card" style="box-shadow: none;">
-                 <p>No payments</p>
-             </div>
-         <% } %>
+        <% if(custPurchases.length > 0) { %>
+            <% custPurchases.forEach(function(purchase) { %>
+            <% if(purchase.isSigned||!purchase.isSigned) { %>
+                
+                <% const formatter = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); %>
+                <% purchase.orders.forEach(function(order) { %>
+                    <%if(order.isSigned){%>
+                        <div class="transaction-card">
+                        <p><i class="fa fa-circle-check"></i> KES. <%= formatter.format(order.cost) %> - <%= order.retailerName %></p>
+                        </div>
+                    <%}%>
+                <% }) %>
+                
+            <% } %>
+            <% }) %>
+        <% } else { %>
+            <div class="transaction-card" style="box-shadow: none;">
+            <p>No payments</p>
+            </div>
+        <% } %>
+         
         <!--end of transaction sections-->
         
 
@@ -66,20 +72,27 @@
     </div>
     <div class="side-section">
         <h1>Purchases</h1>
-        <% if(custPurchases.length>0){ %>
-           <% custPurchases.forEach(function(order) { %>
-            <% if(!order.isSigned){ %>
-            <div class="transaction-card">
+        <!--previous transaction sections-->
+        <% if(custPurchases.length > 0) { %>
+            <% custPurchases.forEach(function(purchase) { %>
+            <% if(!purchase.isSigned||purchase.isSigned) { %>
+                
                 <% const formatter = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); %>
-                <p><i class="fa fa-circle-minus"> </i> KES. <%= formatter.format(order.cost) %> - <%= order.retailerName %></p>
-            </div>
+                <% purchase.orders.forEach(function(order) { %>
+                    <%if(!order.isSigned){%>
+                        <div class="transaction-card">
+                        <p><i class="fa fa-circle-minus"></i> KES. <%= formatter.format(order.cost) %> - <%= order.retailerName %></p>
+                        </div>
+                    <%}%>
+                <% }) %>
             <% } %>
             <% }) %>
-        <% }else{ %>
+        <% } else { %>
             <div class="transaction-card" style="box-shadow: none;">
-                <p>No due payment</p>
+            <p>No purchase</p>
             </div>
         <% } %>
+  
         <% const formatter = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); %>
         <button class="btnCheckOut">Check out KES. <%= formatter.format(sum) %></button>
     </div>

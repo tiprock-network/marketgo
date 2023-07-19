@@ -6,29 +6,47 @@ const request=require('request')
 const User=require('../model/userModel')
 //the order model
 const Order=require('../model/orderModel')
+//package model
+const Package=require('../model/packageModel')
 //import moment
 const moment=require('moment')
 //bcrypt is used to hash password
 const bcrypt=require('bcryptjs')
 const passport=require('passport')
-const {ensureAuthenticated}=require('../config/auth')//protects routes
+const {ensureAuthenticated}=require('../config/auth')//protects routes by using passport
+
 //Mpesa Credentials
 const CONSUMER_KEY=process.env.CONSUMER_KEY
 const CONSUMER_SECRET=process.env.CONSUMER_SECRET
 const SHORT_CODE=process.env.SHORT_CODE
 const MPESA_PASS_KEY=process.env.MPESA_PASS_KEY
 
+//Twilio Credentials
+const TWILIO_AUTH_TOKEN=process.env.TWILIO_AUTH_TOKEN
+const TWILIO_ACCOUNT_SID=process.env.TWILIO_ACCOUNT_SID
+const TWILIO_PHONE_NUMBER=process.env.TWILIO_PHONE_NUMBER
+//import twilio for messaging
+const twilio_client=require('twilio')(TWILIO_ACCOUNT_SID,TWILIO_AUTH_TOKEN)
+
 //create route to dashboard
 router.get('/',ensureAuthenticated,async (req,res)=>{
     const formatter=new Intl.NumberFormat('en-US',{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const order=await Order.find({retailerId:req.user.id});
-    const orderPurchase= await Order.find({custId:req.user.userTransactionId})
-    const totalCost = orderPurchase.reduce((sum, order) =>{
+    const orderPurchase= await Package.find({custId:req.user.userTransactionId})
+    const package=await Package.find({riderId:req.user.userTransactionId})
+    let totalCost = 0;
+
+    for (const purchase of orderPurchase) {
+        const purchaseTotalCost = purchase.orders.reduce((sum, order) => {
         if (!order.isSigned) {
             return sum + parseFloat(order.cost);
-          }
-          return sum;
-    }, 0)
+        }
+        return sum;
+        }, 0);
+
+        totalCost += purchaseTotalCost;
+    }
+
     let firstname=(req.user.userName).split(' ')[0]
     const message = req.query.message;//message from transaction
     res.render('dashboard',{
@@ -39,7 +57,8 @@ router.get('/',ensureAuthenticated,async (req,res)=>{
         orders:order,
         custPurchases:orderPurchase,
         sum:totalCost,
-        transactionMsg:message
+        transactionMsg:message,
+        packages:package
     });
 })
 
@@ -52,15 +71,23 @@ router.get('/signup',(req,res)=>{
 })
 
 //add order
-router.post('/order',ensureAuthenticated,(req,res)=>{
-    //const customer= await User.find({userTransactionId:order.custId});
+router.post('/order',ensureAuthenticated, async (req,res)=>{
+    
     const {custid,cost}=req.body
+    //rider id
+    //utr-XqZ180723230216
+    const riders=await User.find({userType:'rider'})
+    
+    const randomIndex = Math.floor(Math.random() * riders.length);
+    const riderId = riders[randomIndex].userTransactionId;
+
     let errs=[]
     if(!custid || custid.length<18)errs.push({message:'Customer transaction Id input needs to be valid.'});
     else{
         User.findOne({userTransactionId:custid})
-        .then((user)=>{
+        .then(async (user)=>{
             if(user){
+                //create new order
                 const order=new Order({
                     custId:user.userTransactionId,
                     retailerId:req.user.id,
@@ -71,7 +98,25 @@ router.post('/order',ensureAuthenticated,(req,res)=>{
                     retailerPhone:req.user.userPhone
                 })
 
-                order.save().then(user=>{
+                //find a package if it exists
+                const existingPackage = await Package.findOne({ custId: user.userTransactionId});
+                if (existingPackage) {
+                    console.log(order)
+                    existingPackage.orders.push(order); // Append the new order to the existing package
+                    await existingPackage.save(); // Save the updated package
+                  } else {
+                    const newPackage = new Package({
+                      custId: user.userTransactionId,
+                      riderId:riderId,
+                      orders: [order]
+                    });
+                  
+                    await newPackage.save(); // Save the new package
+                  }
+
+                
+                //saves order
+                await order.save().then(user=>{
                     res.redirect('/dashboard')
                     req.flash('success_msg','Order made successfully.')
                 })
@@ -174,14 +219,21 @@ router.post('/commitfunds',ensureAuthenticated,async (req,res)=>{
 router.get('/pay',ensureAuthenticated, async (req,res)=>{
     
     //get the data from database
-    const order=await Order.find({custId:req.user.userTransactionId});
-    const totalCost = order.reduce((sum, order) =>{
-        if (!order.isSigned) {
-            return (sum + parseInt(order.cost));
-          }
-          return sum;
-    }, 0)
-    console.log(totalCost)
+    const order=await Package.find({custId:req.user.userTransactionId});
+    let totalCost=0
+    for (const purchase of order) {
+            const purchaseTotalCost = purchase.orders.reduce((sum, order) => {
+            if (!order.isSigned) {
+                return sum + parseFloat(order.cost);
+            }
+            return sum;
+            }, 0);
+
+            totalCost += purchaseTotalCost;
+        }
+    
+        console.log(totalCost)
+    
    
     //STK PUSH
     generateAccessToken()
@@ -220,11 +272,31 @@ router.get('/pay',ensureAuthenticated, async (req,res)=>{
                     // Check if the ResponseCode is "0" for success
                     if (body.ResponseCode === "0") {
                         // Update the isSigned field to true
-                        for (const o of order) {
-                        o.isSigned = true;
-                        await o.save();
-                        }
-                        res.redirect('/dashboard')
+                        Package.updateMany({}, { $set: { isSigned: true, 'orders.$[].isSigned': true } })
+                        .then(() => {
+                            console.log('Documents updated successfully.');
+                            
+                        })
+                        .catch(error => {
+                            console.error('Error updating documents:', error);
+                            // Handle the error
+                        });
+
+                    //send message to phone number using twilio
+                    //remeber to add name of rider
+                    //twilio fail safe-
+                    twilio_client.messages
+                    .create({
+                        body:`Hi, ${req.user.userName}. You have successfully paid KES.${totalCost} for your mitumba package. Your package will be delivered today. Thank you for using Market Go.`,
+                        from:TWILIO_PHONE_NUMBER,
+                        to: `+${req.user.userPhone}`
+                    })
+                    .then(msg=>console.log(msg.sid))
+
+                    res.redirect('/dashboard')
+
+                          
+                        
                     } else {
                         // Handle the case where ResponseCode is not "0"
                         // For example, you might want to perform some error handling or logging
