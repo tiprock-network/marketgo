@@ -13,10 +13,14 @@
     <script src="https://kit.fontawesome.com/912e452282.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="main-container auth-page">
+    <div class="auth-page">
         <%- include('partials/messages') %>
+        <div class="logo" style="margin-left:-25px;">
+            <center><img src="./images/marketgologo.png" alt=""></center>
+        </div>
+        <center><p style="font-size: 12px; font-weight:600; color:#414040;">Market Go. Buy. Pay Later</p></center>
         <form action="/login" method="POST">
-            <h2>Login here</h2>
+            <center><h2>Login here</h2></center>
             <br>
             <div class="field">
                 <label for="uemail">Email</label>
@@ -30,12 +34,16 @@
                 <label for="upass">Password</label>
                 <br>
                 <!--<p><i class="fa fa-circle-exclamation"></i> Key in the money you plan to use below.</p>-->
-                <input type="password" name="upass" id="upass">
+                <input type="password" name="upass" id="upass" style="font-size: 35px; font-weight:600;">
             </div>
             <br>
 
-            <button class="btnCheckOut" type="submit">Login</button>
+            <center><a href="/signup" class="auth-a-link"><p>Not registered?</p></a></center>
+            <br>
+            <button type="submit">Login</button>
         </form>
+        <br>
+        <center><a href="/signup" class="auth-a-link"><p>Forgot password?</p></a></center>
         
     </div>
 </body>

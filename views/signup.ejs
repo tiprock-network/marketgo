@@ -13,7 +13,7 @@
     <script src="https://kit.fontawesome.com/912e452282.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="main-container auth-page">
+    <div class="auth-page">
         <%- include('partials/messages') %>
         <form action="/signup" method="POST">
             <h2>Sign up here</h2>
@@ -22,7 +22,8 @@
                 <label for="uemail">Email</label>
                 <br>
                 <!--<p><i class="fa fa-circle-exclamation"></i> Key in the money you plan to use below.</p>-->
-                <input type="email" name="uemail" id="uemail" placeholder="e.g.johnjuma@gmail.com" style="font-weight: 500; font-size:16px;">
+                <input type="email" name="uemail" id="uemail" placeholder="e.g. johnjuma@gmail.com" style="font-weight: 500; font-size:16px;">
+                <div id="check-email"></div>
             </div>
             <br>
 
@@ -31,6 +32,7 @@
                 <br>
                 <!--<p><i class="fa fa-circle-exclamation"></i> Key in the money you plan to use below.</p>-->
                 <input type="text" name="uname" id="uname" placeholder="e.g. John Juma" style="font-weight: 500; font-size:16px;">
+                
             </div>
             <br>
 
@@ -44,7 +46,7 @@
                     <option value="none">Prefer not to say</option>
                 </select>
             </div>
-
+            <br>
             <div class="field">
                 <label for="userType">Type of User</label>
                 <br>
@@ -62,6 +64,7 @@
                 <br>
                 <!--<p><i class="fa fa-circle-exclamation"></i> Key in the money you plan to use below.</p>-->
                 <input type="text" name="uphone" id="uphone" placeholder="e.g. 254715765934" style="font-weight: 500; font-size:16px;">
+                <div id="check-number"></div>
             </div>
             <br>
 
@@ -70,6 +73,7 @@
                 <br>
                 <!--<p><i class="fa fa-circle-exclamation"></i> Key in the money you plan to use below.</p>-->
                 <input type="text" name="uaddr" id="uaddr" placeholder="e.g. Road, Street, Building, Estate, City" style="font-weight: 500; font-size:16px;">
+                
             </div>
             <br>
 
@@ -78,12 +82,99 @@
                 <br>
                 <!--<p><i class="fa fa-circle-exclamation"></i> Key in the money you plan to use below.</p>-->
                 <input type="password" name="upass" id="upass">
+                <div id="check-password"></div>
             </div>
             <br>
 
-            <button class="btnCheckOut" type="submit">Sign up</button>
+            <div class="field">
+                <label for="cpass">Confirm Password</label>
+                <br>
+                <!--<p><i class="fa fa-circle-exclamation"></i> Key in the money you plan to use below.</p>-->
+                <input type="password" name="cpass" id="cpass">
+                <div id="confirm-password"></div>
+            </div>
+            <br>
+
+            <button type="submit">Sign up</button>
         </form>
         
     </div>
+    <br>
+    <br>
+<!--javaScript to check the inputs and validate input before submission-->
+<script>
+
+    //check password match
+    const passInput=document.getElementById('upass')
+    const passInputCheck=document.getElementById('cpass')
+    const passMsg=document.getElementById('check-password')
+    const confirmPassMsg=document.getElementById('confirm-password')
+
+    //add event listeners
+    passInput.addEventListener('input',()=>{
+        if(passInput.value.length<8){
+            passMsg.innerHTML='<p style="font-size:13px; color:rgb(219, 56, 56); font-weight: 600;"><i class="fa fa-circle-exclamation"></i> It looks like your passowrd is weak. It must be 8 or more characters.</p>';
+        }else if(!specialCharactersCheck(passInput.value)){
+            passMsg.innerHTML='<p style="font-size:13px; color:rgb(219, 56, 56); font-weight: 600;"><i class="fa fa-circle-exclamation"></i> Password is weak, it needs to more than 8 characters and must have * / . !, #, $, & % ` \'</p>';
+        }else if(specialCharactersCheck(passInput.value)){
+            passMsg.innerHTML='<p style="font-size:13px; color:rgb(40, 163, 116); font-weight: 600;"><i class="fa fa-circle-check"></i> Password is acceptable.</p>';
+        }
+    })
+    //confirm password
+     passInputCheck.addEventListener('input',()=>{
+        if(passInputCheck.value !== passInput.value){
+            confirmPassMsg.innerHTML='<p style="font-size:13px; color:rgb(219, 56, 56); font-weight: 600;"><i class="fa fa-circle-exclamation"></i> The password you entered does not match.</p>';
+        }else if(passInputCheck.value === passInput.value){
+            confirmPassMsg.innerHTML='<p style="font-size:13px; color:rgb(40, 163, 116); font-weight: 600;"><i class="fa fa-circle-check"></i> Passwords match.</p>';
+        }
+     })
+
+     //change number format
+     const numberInput=document.getElementById('uphone')
+     const numberInputMsg=document.getElementById('check-number')
+     //change format
+     numberInput.addEventListener('input',()=>{
+        if(!numberInput.value.startsWith('254')){
+            numberInputMsg.innerHTML='<p style="font-size:13px; color:rgb(219, 56, 56); font-weight: 600;"><i class="fa fa-circle-exclamation"></i> Number needs to start with 254 e.g. 254715765934</p>';
+            numberInput.value=modifyString(numberInput.value)
+        }else if(numberInput.value.startsWith('254')){
+            numberInputMsg.innerHTML='<p style="font-size:13px; color:rgb(40, 163, 116); font-weight: 600;"><i class="fa fa-circle-check"></i> Phone number is valid.</p>';
+        }
+     })
+
+     //check valid email
+     const emailInput=document.getElementById('uemail')
+     const emailInputMsg=document.getElementById('check-email')
+     //check email
+     emailInput.addEventListener('input',()=>{
+        if(!isValidEmail(emailInput.value)) emailInputMsg.innerHTML='<p style="font-size:13px; color:rgb(219, 56, 56); font-weight: 600;"><i class="fa fa-circle-exclamation"></i> Email is not correct.</p>';
+        else emailInputMsg.innerHTML='<p style="font-size:13px; color:rgb(40, 163, 116); font-weight: 600;"><i class="fa fa-circle-check"></i> Email is acceptable.</p>';
+     })
+
+    //check for special characters
+    function specialCharactersCheck(input) {
+        const specialCharsRegex = /[*\/\\.!\#$&%`']/;
+        return specialCharsRegex.test(input);
+      }
+
+    //reformat number
+    function modifyString(input) {
+        if (input.startsWith('254')) {
+          return input; // No modification needed, already starts with '254'
+        } else if (input.startsWith('01')) {
+          return '2541' + input.slice(2); // Replace '01' with '2541'
+        } else if (input.startsWith('07')) {
+          return '2547' + input.slice(2); // Replace '07' with '2547'
+        } else {
+          return input; // Default case, no modification needed
+        }
+      }
+
+      //valid email
+      function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+      }
+</script>
 </body>
 </html>

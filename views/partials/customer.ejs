@@ -1,10 +1,21 @@
 <h1><%= transactionMsg %></h1>
-<div class="main-container">
-    <!--<div class="logo">
-            <img src="./images/marketgologo.png" alt="">
+       <div class="navbar">
+        <div class="logo">
+            <img src="./images/marketgologo.png" alt=""><sub><b>Market go</b></sub><sup style="font-size: 14px;">&reg;</sup>
         </div>
-        <h1>Market Go. Buy. Pay Later</h1>-->
-
+        <nav>
+            <ul>
+                <li><i class="fa fa-house-circle-check"></i> Home</li>
+                <li><i class="fa fa-table-columns"></i> Dashboard</li>
+                <li><i class="fa fa-swatchbook"></i> About</li>
+                <a href="/logout"><li><i class="fa fa-circle-xmark"></i> Logout</li></a>
+            </ul>
+        </nav>
+       </div>
+       
+<div class="main-container">
+   
+        
     <div class="side-section">
         <h2>Hi, <%= fname %></h2>
         <br>
@@ -14,15 +25,17 @@
         <table>
             <thead>
                 <tr>
-                    <th><i class="fa fa-wallet"></i> Mpesa Balance</th>
+                    <th><i class="fa fa-shopping-bag"></i> Items</th>
                     <th><i class="fa fa-coins"></i> Budget</th>
+                    
                 </tr>
             </thead>
 
             <tbody>
                 <tr>
-                    <td>KES. 5,230.00</td>
+                    <td><%= custPurchases.length %></td>
                     <td>KES. <%= budget %></td>
+                    
                 </tr>
             </tbody>
         </table>
@@ -100,3 +113,5 @@
    
     
 </div>
+
+<div class="footer-menu"></div>
