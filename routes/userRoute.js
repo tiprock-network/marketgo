@@ -14,6 +14,12 @@ const moment=require('moment')
 const bcrypt=require('bcryptjs')
 const passport=require('passport')
 const {ensureAuthenticated}=require('../config/auth')//protects routes by using passport
+const jwt = require('jsonwebtoken')
+const nodemailer = require('nodemailer')
+
+//require file path modules
+const fs=require('fs')
+const path=require('path')
 
 //Mpesa Credentials
 const CONSUMER_KEY=process.env.CONSUMER_KEY
@@ -341,8 +347,171 @@ router.post('/login',(req,res,next)=>{
 //logout a user
 //create a link on dashboard for this
 router.get('/logout',(req,res)=>{
-    req.logOut()
     res.redirect('/')
+    req.logOut()
+})
+
+//forgot password
+//reset send link page
+router.get('/resetlink',(req,res,next)=>{
+    res.render('resetlink')
+})
+//send reset link
+router.post('/resetlink',async (req,res,next)=>{
+    const email=req.body.remail
+    const checkUser=await User.findOne({userEmail:email});
+    //check of email was sent
+    if(email){
+        //res.send(email)
+        //check if user exists
+        if(checkUser){
+            //use link once for 15 minutes
+            const secret=process.env.AUTH_SECRET+checkUser.userPass;
+            //create a payload
+            const payload={
+                email:checkUser.userEmail,
+                id:checkUser.userTransactionId
+            }
+            //generate token with JWT
+            const token=jwt.sign(payload, secret, {expiresIn:'15m'})
+
+            //generate reset link
+            const reset_link=`http://${process.env.HOST_NAME}:${process.env.PORT}/resetpassword/${checkUser.userTransactionId}/${token}`;
+            //user name
+            const uname=checkUser.userName
+            //send email using nodemailer with reset link
+            //create a transporter
+            const transporter = nodemailer.createTransport({
+                host:process.env.SMTP_HOST,
+                port: process.env.EMAIL_PORT,
+                secure:true,
+                auth:{
+                    user:process.env.APP_EMAIL,
+                    pass:process.env.APP_EMAIL_PASSWORD2
+                }
+            });
+
+            //get html file path
+            const htmlpath=path.join(__dirname,'inc','reset.html')
+            //read the file
+            fs.readFile(htmlpath,'utf8',(error,htmlContent)=>{
+                if(error)console.log('Error: ',error)
+                else{
+                    let modifiedHtml=htmlContent.replace("[USER NAME]",uname);
+                    modifiedHtml=modifiedHtml.replace(/\[LINK HERE\]/g,reset_link);
+                     //use an function to send the email
+                    transporter.sendMail({
+                        from:'"Market Go" <marketgo@gmail.com>',
+                        to:checkUser.userEmail,
+                        subject:'Password Reset Link',
+                        html:modifiedHtml
+                    }).catch(console.error)
+
+                    //send notification
+                    res.send(`
+                        <div style="margin-top: 5%;">
+                        <center><p style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; font-size: 16px; font-weight:600; color:rgb(18, 139, 93);">Email sent successfully. Please close this tab and check your email.</p></center>
+                        <center><img style="height: 120px; width: 125px;" src="./images/rocket-launch.gif"></center>
+                        </div>
+                    `
+                    );
+                }
+            })
+           
+        }else{
+            res.send(`
+        <div style="margin-top: 5%;">
+        <center><p style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; font-size: 16px; font-weight:600; color:rgb(202, 36, 36);">Sending a reset email failed. It seems that your account does not exist. Go back and try again or signup.</p></center>
+        <center><img style="height: 120px; width: 125px;" src="./images/meteorite.gif"></center>
+        </div>
+    `
+    );
+        }
+        
+    }
+    else //send notification
+    res.send(`
+        <div style="margin-top: 5%;">
+        <center><p style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; font-size: 16px; font-weight:600; color:rgb(202, 36, 36);">Woow...it seems like you did not input anything. The process has broken, kindly go back.</p></center>
+        <center><img style="height: 120px; width: 125px;" src="./images/sad.gif"></center>
+        </div>
+    `
+    );
+})
+
+//reset page
+router.get('/resetpassword/:id/:token', async (req,res,next)=>{
+    const {id, token}=req.params
+    //find a user with given id
+
+    await User.findOne({userTransactionId:id})
+    .then((account)=>{
+        if(account){
+            const secret=process.env.AUTH_SECRET+account.userPass;
+
+            try{
+                const payload=jwt.verify(token, secret)
+                res.render('reset',{id,token})
+            }catch(error){
+                res.send(error.message)
+            }
+        }else{
+            res.send('No user found.')
+        }
+    })
+    .catch((error=>{
+        console.log(error)
+    }))
+    
+
+})
+//reset password
+router.post('/resetpassword/:id/:token', async (req,res,next)=>{
+    const {id,token}=req.params
+    //get submitted data from the form
+    const {pass,cpass}=req.body
+    //find a user with given id
+
+    await User.findOne({userTransactionId:id})
+    .then(async (account)=>{
+        if(account){
+            const secret=process.env.AUTH_SECRET+account.userPass;
+
+            try{
+                const payload=jwt.verify(token, secret)
+                //change the password
+                account.userPass=pass
+               
+
+                 //generate salt
+                 bcrypt.genSalt(10, (err,salt)=>bcrypt.hash(account.userPass,salt,(err,hash)=>{
+                    if(err) throw err;
+                    //set object password to hashed value
+                    account.userPass=hash
+
+                    //save the password and send success message
+                    account.save()
+                    .then(user=>{
+                        req.flash('success_msg','You have successfully changed your password.')
+                        res.redirect('/login')
+                    })
+                    .catch(err=>console.log(err))
+
+                    //to log in an API
+                    //res.json(account)
+                }))
+            }catch(error){
+                res.send(error.message)
+            }
+        }else{
+            res.send('No user found.')
+        }
+    })
+    .catch((error=>{
+        console.log(error)
+    }))
+    
+    
 })
 
 //generate Mpesa Access token
