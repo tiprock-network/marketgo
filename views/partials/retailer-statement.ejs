@@ -1,0 +1,78 @@
+       <div class="navbar">
+        <div class="logo">
+            <img src="./images/marketgologo.png" alt=""><sub><b>Market go</b></sub><sup style="font-size: 14px;">&reg;</sup>
+        </div>
+        <nav>
+            <ul>
+                <li><i class="fa fa-house-circle-check"></i> Home</li>
+                <li><i class="fa fa-table-columns"></i> Dashboard</li>
+                <li><i class="fa fa-swatchbook"></i> About</li>
+                <a href="/logout" style="color: #333;"><li><i class="fa fa-circle-xmark"></i> Logout</li></a>
+            </ul>
+        </nav>
+       </div>
+        
+
+
+<div class="transaction-statement" id="tran-stat">
+    <!--previous transaction sections-->
+
+<table>
+    <i class="fa fa-rectangle-xmark" onclick="closeCheckStatement()"></i>
+    <thead>
+      <tr>
+        <th>Customer Id</th>
+        <th>Retailer Id</th>
+        <th>Retailer Name</th>
+        <th>Customer Address</th>
+        <th>Cost</th>
+        <th>Customer Phone</th>
+        <th>Retailer Phone</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <% if (custPurchases.length > 0) { %>
+      <tbody>
+        <% const formatter = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); %>
+        <% custPurchases.forEach(function (order) { %>
+          <tr>
+            <td><%= order.custId %></td>
+            <td><%= order.retailerId %></td>
+            <td><%= order.retailerName %></td>
+            <td><%= order.custAddr %></td>
+            <td>KES.<%= formatter.format(order.cost) %></td>
+            <td><%= order.custPhone %></td>
+            <td><%= order.retailerPhone %></td>
+            <td><%= order.orderDate%></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    <% } else { %>
+      <tbody>
+        <tr>
+          <td colspan="8">No transactions</td>
+        </tr>
+      </tbody>
+    <% } %>
+  </table>
+  
+  
+  <!--end of transaction sections-->
+  
+    
+</div>
+<a href="/generate-trader-statement"><button style="margin-left:5%; margin-top: 1%;font-family: 'Montserrat', sans-serif; font-size: 18px; color: rgb(18, 139, 93); border: 1px solid rgb(18, 139, 93); background: #fff; padding: 15px; cursor:pointer;"><i class="fa fa-file-pdf"></i> Get statement</button></a>
+
+
+
+
+<script>
+    const statementCont=document.getElementById('tran-stat');
+    function checkStatement(){
+        statementCont.style.display='block';
+    }
+
+    function closeCheckStatement(){
+        statementCont.style.display='none';
+    }
+</script>

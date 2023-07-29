@@ -72,6 +72,10 @@ body{
     padding-right: 10px;
     transform: translateX(30%);
 }
+.footer-menu>ul>li>a>img{
+    width: 50px;
+    height: 50px;
+}
 .footer-menu>ul>li>img{
     width: 50px;
     height: 50px;
@@ -246,6 +250,23 @@ body{
     font-size: 30px;
 }
 
+.auth-page form textarea{
+    border: none;
+    border-bottom: 1px solid var(--green-leaf);
+    width: 100%;
+    margin-top: 20px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    background: #f3efef;
+    padding: 10px;
+    padding-left: 10px;
+    padding-right: 0;
+    outline: none;
+    resize: none;
+}
+
 .auth-page form>.field> select{
     border: none;
     border-bottom: 1px solid var(--green-leaf);
@@ -262,6 +283,36 @@ body{
     outline: none;
 }
 
+/*profile page*/
+.profile-box{
+    
+    width: 80%;
+    margin: 5%;
+    margin-top: 2%;
+    transform: translateX(8%);
+}
+.profile-cont-showcase{
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+.profile-cont-showcase img{
+    object-fit: cover;
+}
+/*sub cards in the profile section*/
+.grid-container-profile{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    margin-top: 20px;
+    padding: 10px;
+    gap: 10px;
+}
+.grid-container-profile div{
+    border: 1px solid #ccc;
+    
+    border-radius: 20px;
+    padding: 15px;
+}
 .side-section{
     /*width: 90%;*/
     border: 1px solid #ccc;
@@ -349,6 +400,35 @@ body{
     font-size: 13px;
     font-weight: 600;
     color: #7a7979;
+}
+
+/*statement*/
+.transaction-statement{
+    
+    width: 90%;
+    transform: translateX(5%);
+    font-size: 12px;
+    margin-bottom: 30px;
+    margin-top: 30px;
+}
+
+.transaction-statement table{
+    border: none;
+    padding: 5px;
+}
+
+.transaction-statement table th{
+    color: #fff;
+    background-color: var(--green-grass);
+    border: 5px solid var(--green-grass);
+}
+.transaction-statement table td{
+    border-bottom: 1px solid #ccc;
+}
+
+.fa-rectangle-xmark{
+    font-size: 18px;
+    color: var(--rosered-light);
 }
 
 

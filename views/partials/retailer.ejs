@@ -7,11 +7,12 @@
             <li><i class="fa fa-house-circle-check"></i> Home</li>
             <li><i class="fa fa-table-columns"></i> Dashboard</li>
             <li><i class="fa fa-swatchbook"></i> About</li>
-            <a href="/logout"><li><i class="fa fa-circle-xmark"></i> Logout</li></a>
+            <a href="/logout" style="color: #333;"><li><i class="fa fa-circle-xmark"></i> Logout</li></a>
         </ul>
     </nav>
    </div>
    
+
 <div class="main-container trader">
     <!--<div class="logo">
             <img src="./images/marketgologo.png" alt="">
@@ -20,27 +21,26 @@
 
     
 
-    <div class="side-section">
+    <div class="side-section" style="background-color: #fff; color:#333;">
         <h2><%= name %></h2>
         <br>
        <div class="section-menu">
-            <a href="/dashboard/commitfunds"><p style="font-size: 12px;"><i class="fa fa-receipt"></i> <br> Transactions</p></a>
-            <p style="font-size: 12px;"><i class="fa fa-ellipsis"></i> <br> Options</p>
-            <p style="font-size: 12px;"><i class="fa fa-eye-slash"></i> <br> <%= id %></p>
-            <p style="font-size: 12px;"><i class="fa fa-pencil"></i> <br> View orders</p>
+            <a href="/generate-trader-statement"><p style="font-size: 12px; color:#333;"><i class="fa fa-receipt" style="color: #333;"></i> <br> Transactions</p></a>
+            <p style="font-size: 12px;"><i class="fa fa-id-card-clip"></i> <br> <%= id %></p>
+            
             <br>
         <table>
             <thead>
                 <tr>
-                    <th><i class="fa fa-money-check"></i> Unpaid</th>
+                    
                     <th><i class="fa fa-coins"></i> Income</th>
                 </tr>
             </thead>
 
             <tbody>
                 <tr>
-                    <td>KES. 5,230.00</td>
-                    <td>KES. <%= budget %></td>
+                    
+                    <td>KES. <%= revenue %></td>
                 </tr>
             </tbody>
         </table>
@@ -103,10 +103,9 @@
 <div class="footer-menu">
     
     <ul>
-        <li><img src="./images/shopping.gif" alt=""></li>
-        <li><img src="./images/tech-support.gif" alt=""></li>
-        <li><img src="./images/line-bars.gif" alt=""></li>
-        <li><img src="./images/profile.gif" alt=""></li>
+        <li><a href="/statement-retailer"><img src="./images/shopping.gif" alt=""></a></li>
+        <li><a href="/contact-us"><img src="./images/tech-support.gif" alt=""></a></li>
+        <li><a href="/profile"><img src="./images/profile.gif" alt=""></a></li>
         
     </ul>
 

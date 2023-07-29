@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="You can now be able to shop at the market for clothes and pay later using Marketgo. This platform gives you the merit of not loosing your valuables while shopping in a crowded market. Signup and enjoy using Marketgo.">
+    <meta name="keywords" content="mpesa, market, mitumba, second hand, cloth, pay later, credit, shop">
+    <title>Marketgo Support</title>
+    <link rel="shortcut icon" href="./images/favico.png" type="image/x-icon">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/912e452282.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="auth-page">
+        <%- include('partials/messages') %>
+        <div class="logo" style="margin-left:-25px;">
+            <center><img src="./images/marketgologo.png" alt=""></center>
+        </div>
+        <center><p style="font-size: 12px; font-weight:600; color:#414040;">Market Go. Buy. Pay Later</p></center>
+        <form action="/contact-us" method="POST">
+            <center><h2>Contact Support</h2></center>
+            <br>
+            <div class="field">
+                <label for="uemail">Email</label>
+                <br>
+                <!--<p><i class="fa fa-circle-exclamation"></i> Key in the money you plan to use below.</p>-->
+                <input type="email" name="uemail" id="uemail" placeholder="e.g.someone@example.com" style="font-weight: 500; font-size:16px;">
+            </div>
+            <br>
+
+            <div class="field">
+                <label for="uname">Name</label>
+                <br>
+                <!--<p><i class="fa fa-circle-exclamation"></i> Key in the money you plan to use below.</p>-->
+                <input type="text" name="uname" id="uname" placeholder="e.g. John Musa" style="font-weight: 500; font-size:16px;">
+            </div>
+            <br>
+
+            <div class="field">
+                <label for="subject">Subject</label>
+                <br>
+                <!--<p><i class="fa fa-circle-exclamation"></i> Key in the money you plan to use below.</p>-->
+                <input type="text" name="subject" id="subject" placeholder="e.g. How do I print receipt ?" style="font-weight: 500; font-size:16px;">
+            </div>
+            <br>
+
+            <div class="field">
+                <label for="message">Message</label>
+                <br>
+                <!--<p><i class="fa fa-circle-exclamation"></i> Key in the money you plan to use below.</p>-->
+                <textarea name="message" id="message" cols="30" rows="10" placeholder="e.g. I am having trouble printing my receipt." ></textarea>
+            </div>
+            <br>
+
+            
+            <br>
+            <button type="submit" id="submit-btn">Send message</button>
+        </form>
+        <br>
+        
+        
+    </div>
+</body>
+</html>

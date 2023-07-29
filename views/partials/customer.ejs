@@ -8,7 +8,7 @@
                 <li><i class="fa fa-house-circle-check"></i> Home</li>
                 <li><i class="fa fa-table-columns"></i> Dashboard</li>
                 <li><i class="fa fa-swatchbook"></i> About</li>
-                <a href="/logout"><li><i class="fa fa-circle-xmark"></i> Logout</li></a>
+                <a href="/logout" style="color: #333;"><li><i class="fa fa-circle-xmark"></i> Logout</li></a>
             </ul>
         </nav>
        </div>
@@ -51,8 +51,9 @@
         <br>
        <div class="section-menu">
             <a href="/dashboard/commitfunds"><p><i class="fa fa-list-check"></i> <br> Commit amount</p></a>
-            <p><i class="fa fa-receipt"></i> <br> Receipts</p>
-            <p><i class="fa fa-eye-slash"></i> <br> <%= id %></p>
+            <a href="/generate-receipt"><p><i class="fa fa-receipt"></i> <br> Current Receipt</p></a>
+            
+            <p><i class="fa fa-id-card-clip"></i> <br> <%= id %></p>
        </div>
         
     </div>
@@ -68,11 +69,23 @@
                 
                 <% const formatter = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); %>
                 <% purchase.orders.forEach(function(order) { %>
-                    <%if(order.isSigned){%>
-                        <div class="transaction-card">
-                        <p><i class="fa fa-circle-check"></i> KES. <%= formatter.format(order.cost) %> - <%= order.retailerName %></p>
-                        </div>
-                    <%}%>
+                    
+
+                    <% if (order.isSigned) { %>
+                        <% const orderDate = new Date(order.orderDate); %>
+                        <% const currentDate = new Date(); %>
+                        <% if (
+                          orderDate.getDate() === currentDate.getDate() &&
+                          orderDate.getMonth() === currentDate.getMonth() &&
+                          orderDate.getFullYear() === currentDate.getFullYear()
+                        ) { %>
+                          <div class="transaction-card">
+                            <p><i class="fa fa-circle-check"></i> KES. <%= formatter.format(order.cost) %> - <%= order.retailerName %></p>
+                          </div>
+                        <% } %>
+                      <% } %>
+                      
+
                 <% }) %>
                 
             <% } %>
@@ -112,49 +125,40 @@
         <% } %>
   
         <% const formatter = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); %>
-        <a href="/pay"><button class="btnCheckOut" disabled>Check out KES. <%= formatter.format(sum) %></button></a>
+        <% if(sum<=0){ %>
+            <a href="/pay"><button class="btnCheckOut" disabled>Check out KES. <%= formatter.format(sum) %></button></a>
+        <% }else{ %>
+            <a href="/pay"><button class="btnCheckOut">Check out KES. <%= formatter.format(sum) %></button></a>
+        <% } %>
+
     </div>
 
    
     
 </div>
 
-<div class="transaction-card">
-    <p><i class="fa fa-circle-check"></i> KES. <%= formatter.format(order.cost) %> - <%= order.retailerName %></p>
-    </div>
 
-<div class="transaction-statement">
-    <!--previous transaction sections-->
-    <% if(custPurchases.length > 0) { %>
-        <% custPurchases.forEach(function(purchase) { %>
-        <% if(purchase.isSigned||!purchase.isSigned) { %>
-            
-            <% const formatter = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); %>
-            <% purchase.orders.forEach(function(order) { %>
-                <%if(order.isSigned){%>
-                   
-                <%}%>
-            <% }) %>
-            
-        <% } %>
-        <% }) %>
-    <% } else { %>
-        <div class="transaction-card" style="box-shadow: none;">
-        <p>No payments</p>
-        </div>
-    <% } %>
-     
-    <!--end of transaction sections-->
-</div>
+
+
 
 <div class="footer-menu">
     
         <ul>
-            <li><img src="./images/shopping.gif" alt=""></li>
-            <li><img src="./images/tech-support.gif" alt=""></li>
-            <li><img src="./images/line-bars.gif" alt=""></li>
-            <li><img src="./images/profile.gif" alt=""></li>
+            <li><a href="/statement"><img src="./images/shopping.gif" alt=""></a></li>
+            <li><a href="/contact-us"><img src="./images/tech-support.gif" alt=""></a></li>
+            <li><a href="/profile"><img src="./images/profile.gif" alt=""></a></li>
             
         </ul>
     
 </div>
+
+<script>
+    const statementCont=document.getElementById('tran-stat');
+    function checkStatement(){
+        statementCont.style.display='block';
+    }
+
+    function closeCheckStatement(){
+        statementCont.style.display='none';
+    }
+</script>
