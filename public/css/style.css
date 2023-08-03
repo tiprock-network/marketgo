@@ -313,6 +313,7 @@ body{
     border-radius: 20px;
     padding: 15px;
 }
+
 .side-section{
     /*width: 90%;*/
     border: 1px solid #ccc;
@@ -511,4 +512,130 @@ body{
       35% {
         transform: translateY(-20px);
       }
+}
+
+/*styling for smaller screens*/
+@media(max-width:800px){
+    
+    /*formats the forms for login and signup*/
+    .auth-page{
+        border: none;
+        box-shadow: none;
+        padding: 15px;
+        width: 90%;
+        margin-top: 2%;
+        transform: translateX(1%);
+     }
+     /*format send email for small screens*/
+     .main-container form{
+        border: none;
+        padding: 30px;
+        transform: translateX(0);
+        
+    }
+    .main-container{
+        width: 90%;
+        /*border: 1px solid #ccc;*/
+        margin-top: 40px;
+        padding: 15px;
+        transform: translateX(0);
+        display: grid;
+        grid-template-columns: repeat(1,1fr);
+        gap: 10px;
+    }
+    
+    
+    .large-screen-footer{
+        display: none;
+    }
+    .small-screen-footer{
+        display: block;
+        box-shadow: none;
+        transform: translateX(0);
+        
+    }
+    .small-screen-footer>ul>li>a{
+        text-decoration: none;
+        color:#7a7979;
+        
+    }
+    .small-screen-footer>ul>li{
+        margin-left: 10px;
+    }
+    
+
+    /*profile page*/
+    .profile-box{
+        
+        width: 90%;
+        transform: translateX(0);
+    }
+   
+    
+    /*sub cards in the profile section*/
+    .grid-container-profile{
+        display: grid;
+        grid-template-columns: repeat(1,1fr);
+      
+    }
+    .grid-container-profile div{
+        border: none;
+        border-radius: 0px;
+        
+    }
+
+    /*styling navbar for small screens*/
+    .navbar{
+        width: 100%;
+        box-shadow: none;
+        padding: 10px;
+        transform: translateX(0);
+        display: flex;
+        align-items: center; /* Vertically align logo and nav items */
+        justify-content: space-between; /* Distribute logo and nav items evenly */
+    }
+    
+    
+    .navbar>.logo img{
+        vertical-align: middle; /* Align the image with text */
+        margin-right: 50px; 
+    }
+    
+    
+    .navbar> nav ul li{
+        display: none;
+    }
+
+    .transaction-card form{
+        border: none;
+        transform: translateX(-40px);
+        margin-left: 0;
+    }
+    
+
+    /*for a retailer's custid form*/
+    /*for a retailer's custid form*/
+    .custid-form form{
+        transform: translateX(0);
+        border: none;
+        padding-left: 5px;
+        padding-top: 5px;
+        width: 100%;
+    }
+
+    .custid-form form> .transaction-card input{
+        transform: translateX(0);
+        outline: none;
+        padding: 10px;
+        margin: 5%;
+        margin-left: 0;
+        width: 90%;
+        background-color: #e9e9e9;
+        color: #7a7979;
+        border: none;
+        border-radius: 15px;
+       font-family: 'Montserrat', sans-serif;
+        font-size: 18px;
+        font-weight: 800;
+    }
 }

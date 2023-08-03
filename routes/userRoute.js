@@ -466,6 +466,8 @@ router.get('/logout', ensureAuthenticated, (req, res) => {
     }
   });
 
+
+
 router.get('/signup',(req,res)=>{
     res.render('signup')
 })
