@@ -33,11 +33,12 @@
 
             <tbody>
                 <tr>
-                    
+                    <td>
                      <!--get number of orders-->
                    <% custPurchases.forEach((pkgData)=>{ %>
-                    <td><%= pkgData.orders.length %></td>
+                    <%= pkgData.orders.length %>
                     <% }) %>
+                </td>
                     <td>KES. <%= budget %></td>
                     
                 </tr>
@@ -105,6 +106,7 @@
         <h1>Purchases</h1>
         <!--previous transaction sections-->
         <% if(custPurchases.length > 0) { %>
+            
             <% custPurchases.forEach(function(purchase) { %>
             <% if(!purchase.isSigned||purchase.isSigned) { %>
                 
@@ -112,12 +114,18 @@
                 <% purchase.orders.forEach(function(order) { %>
                     <%if(!order.isSigned){%>
                         <div class="transaction-card">
-                        <p><i class="fa fa-circle-minus"></i> KES. <%= formatter.format(order.cost) %> - <%= order.retailerName %></p>
+                            <form action="/package/<%= order.id %>?_method=DELETE" method="POST">
+                            <p>
+                            <button type="submit"><i class="fa fa-circle-minus"></i></button>
+                             KES. <%= formatter.format(order.cost) %> - <%= order.retailerName %>
+                            </p>
+                            </form>
                         </div>
                     <%}%>
                 <% }) %>
             <% } %>
             <% }) %>
+        
         <% } else { %>
             <div class="transaction-card" style="box-shadow: none;">
             <p>No purchase</p>

@@ -40,10 +40,14 @@ const twilio_client=require('twilio')(TWILIO_ACCOUNT_SID,TWILIO_AUTH_TOKEN)
 //create route to dashboard
 router.get('/',ensureAuthenticated,async (req,res)=>{
     const formatter=new Intl.NumberFormat('en-US',{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    //fetch all customers
+    const customers_list=await User.find({userType:'customer'})
     const order=await Order.find({retailerId:req.user.id});
     const orders=await Order.find({retailerId:req.user.id});
     const orderPurchase= await Package.find({custId:req.user.userTransactionId})
     const package=await Package.find({riderId:req.user.userTransactionId})
+    
+    
     let totalCost = 0;
 
     for (const purchase of orderPurchase) {
@@ -75,9 +79,10 @@ router.get('/',ensureAuthenticated,async (req,res)=>{
         orders:order,
         custPurchases:orderPurchase,
         sum:totalCost,
-        revenue:totalrevenue,
+        revenue:formatter.format(totalrevenue),
         transactionMsg:message,
-        packages:package
+        packages:package,
+        customerList:customers_list,
     });
 })
 
@@ -431,6 +436,36 @@ router.get('/login',(req,res)=>{
     res.render('login')
 })
 
+//login using passport
+router.post('/login',(req,res,next)=>{
+    passport.authenticate('local',{
+        successRedirect:'/dashboard',
+        failureRedirect:'/login',
+        failureFlash: true
+    })(req,res,next);
+})
+
+//logout a user
+//create a link on dashboard for this
+// Logout a user - create a link on the dashboard for this
+router.get('/logout', ensureAuthenticated, (req, res) => {
+    // Check if the user is authenticated before logging them out
+    if (req.isAuthenticated()) {
+      // Log the user out
+      req.logOut(function(err) {
+        if (err) {
+          // Handle any potential error that occurred during logout
+          console.error('Error during logout:', err);
+        }
+        // Redirect the user to the home page (or any other page you desire)
+        res.redirect('/');
+      });
+    } else {
+      // If the user is not authenticated, simply redirect them to the home page
+      res.redirect('/');
+    }
+  });
+
 router.get('/signup',(req,res)=>{
     res.render('signup')
 })
@@ -496,6 +531,37 @@ router.post('/order',ensureAuthenticated, async (req,res)=>{
     }
 
 })
+
+//delete item not purchased
+router.delete('/package/:orderId', async (req, res) => {
+    const orderId = req.params.orderId;
+
+    try {
+        //delete single order from document table
+        await Order.findByIdAndDelete(req.params.orderId)
+        //delete same order in package
+        const package = await Package.findOne({ "orders._id": orderId });
+        if (!package) {
+            return res.status(404).send('Package not found' );
+        }
+
+        const orderIndex = package.orders.findIndex((order) => order._id.toString() === orderId);
+        if (orderIndex === -1) {
+            return res.status(404).send('Order not found in the package' );
+        }
+
+        // Remove the order from the package
+        package.orders.splice(orderIndex, 1);
+
+        // Save the updated package
+        await package.save();
+
+        res.redirect('/dashboard' );
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send('Internal server error');
+    }
+});
 
 
 //registration
@@ -605,7 +671,7 @@ router.get('/pay',ensureAuthenticated, async (req,res)=>{
     generateAccessToken()
     .then((access_token)=>{
         const URL='https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest'
-        const Auth='Bearer '+access_token
+        const Auth='Bearer '+access_token //Auth MTQwsnsjIISJSJ8943843jjdj=
         let timestamp=moment().format('YYYYMMDDHHmmss')
         //generate password
         const password= new Buffer.from(SHORT_CODE+MPESA_PASS_KEY+timestamp).toString('base64')
@@ -638,9 +704,11 @@ router.get('/pay',ensureAuthenticated, async (req,res)=>{
                     // Check if the ResponseCode is "0" for success
                     if (body.ResponseCode === "0") {
                         // Update the isSigned field to true
-                        Package.updateMany({}, { $set: { isSigned: true, 'orders.$[].isSigned': true } })
+                        await Package.updateMany({}, { $set: { isSigned: true, 'orders.$[].isSigned': true } })
                         .then(async () => {
                             
+                            
+                            //update rider balance
                             for (const purchase of order) {
                                 // Get the rider for each order separately
                                 const rider = await User.findOne({ userTransactionId: purchase.riderId });
@@ -656,6 +724,9 @@ router.get('/pay',ensureAuthenticated, async (req,res)=>{
                                   console.error(`Rider with ID ${purchase.riderId} not found in the database.`);
                                 }
                               }
+
+                             
+
                             console.log('Documents updated successfully.');
                             
                         })
@@ -745,37 +816,43 @@ router.get('/pay',ensureAuthenticated, async (req,res)=>{
     })
     .catch(console.log())
 })*/
+router.get('/updateRetailerBalances', ensureAuthenticated,async (req, res) => {
+    try {
+        const retailerId = req.user.id;
+        const retailer_transactId = req.user.userTransactionId;
 
+        // Find all packages with orders that have the given retailerId
+        const packages = await Package.find({ 'orders.retailerId': retailerId,'orders.isSigned': true, });
+        let totalCost = 0;
 
-
-
-//login using passport
-router.post('/login',(req,res,next)=>{
-    passport.authenticate('local',{
-        successRedirect:'/dashboard',
-        failureRedirect:'/login',
-        failureFlash: true
-    })(req,res,next);
-})
-
-//logout a user
-//create a link on dashboard for this
-// Logout a user - create a link on the dashboard for this
-router.get('/logout', ensureAuthenticated, (req, res) => {
-    // Check if the user is authenticated before logging them out
-    if (req.isAuthenticated()) {
-      // Log the user out
-      req.logOut(function(err) {
-        if (err) {
-          // Handle any potential error that occurred during logout
-          console.error('Error during logout:', err);
+        // Calculate the total cost of each order in all packages for the given retailerId
+        for (const purchase of packages) {
+            for (const order of purchase.orders) {
+                if (order.retailerId === retailerId) {
+                    let orderCost = parseFloat(order.cost);
+                    totalCost += orderCost;
+                    console.log(totalCost)
+                }
+                console.log(totalCost)
+            }
         }
-        // Redirect the user to the home page (or any other page you desire)
-        res.redirect('/');
-      });
-    } else {
-      // If the user is not authenticated, simply redirect them to the home page
-      res.redirect('/');
+
+        //update retailer balance
+        // Find the user with userTransactionId as retailerId
+        const retailerUser = await User.findOne({ userTransactionId: retailer_transactId});
+        if (retailerUser) {
+            retailerUser.userBalance = totalCost;
+            await retailerUser.save();
+            console.log(`Retailer with ID ${retailerId} userBalance updated.`);
+        } else {
+            console.error(`Retailer with ID ${retailerId} not found in the database or not of type 'retailer'.`);
+        }
+
+        console.log(`Total cost of trader is: ${totalCost}`)
+        res.redirect('/dashboard')
+    } catch (error) {
+        console.error('Error calculating total cost:', error);
+        res.status(500).json({ error: 'Internal server error.' });
     }
   });
   
@@ -1003,12 +1080,14 @@ router.post('/resetpassword/:id/:token', async (req,res,next)=>{
     
 })
 
+
+
 //generate Mpesa Access token
 function generateAccessToken(){
     const consumerKey=CONSUMER_KEY
     const consumerSecret=CONSUMER_SECRET
     const URL='https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials'
-    const Auth='Basic '+new Buffer.from(consumerKey+':'+consumerSecret).toString('base64')
+    const Auth='Basic '+new Buffer.from(consumerKey+':'+consumerSecret).toString('base64')// Basic snajajJienejj901010
     return new Promise((response,reject)=>{
         request({
             url:URL,

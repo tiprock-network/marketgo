@@ -1,11 +1,11 @@
 const mongoose=require('mongoose')
-const genTransId=require('./generateCustomId')
+const generateUniqueShortId = require('./generateCustomId')
 
 
 const userSchema=new mongoose.Schema({
     userTransactionId:{
         type:String,
-        default:genTransId()
+        default:generateUniqueShortId()
     },
     userEmail:{
         type:String,

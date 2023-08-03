@@ -40,6 +40,7 @@ const orderSchema=new mongoose.Schema({
     }
 })
 
+//represents an array of orders for a particular user
 const PackageSchema=new mongoose.Schema({
     custId:{
         type:String,

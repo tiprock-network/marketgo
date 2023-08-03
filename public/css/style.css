@@ -402,6 +402,19 @@ body{
     color: #7a7979;
 }
 
+.transaction-card form{
+    border: none;
+    transform: translateX(-10px);
+    padding: 0;
+    margin: 0;
+    margin-left: 15px;
+}
+.transaction-card form button{
+    border: none;
+    background-color: #fff;
+}
+
+
 /*statement*/
 .transaction-statement{
     
@@ -430,6 +443,8 @@ body{
     font-size: 18px;
     color: var(--rosered-light);
 }
+
+
 
 
 .logo{

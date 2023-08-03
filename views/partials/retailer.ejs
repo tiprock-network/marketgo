@@ -32,14 +32,14 @@
         <table>
             <thead>
                 <tr>
-                    
+                    <th><i class="fa fa-coins"></i> Earned</th>
                     <th><i class="fa fa-coins"></i> Income</th>
                 </tr>
             </thead>
 
             <tbody>
                 <tr>
-                    
+                    <td>KES. <%= budget %></td>
                     <td>KES. <%= revenue %></td>
                 </tr>
             </tbody>
@@ -65,7 +65,7 @@
             </div>
         <% } %>
     
-        <button class="btnCheckOut">Search list</button>
+       <a href="/updateRetailerBalances"> <button class="btnCheckOut">Update Earnings</button></a>
         
 
         
@@ -78,7 +78,12 @@
         <!--previous transaction sections-->
         <form action="/order" method="POST">
             <div class="transaction-card">
-                <input type="text" name="custid" id="custid" placeholder="e.g. utr-kOP254...">
+                <input type="text" name="custid" id="custid" list="userIds" placeholder="e.g. utr-kOP254...">
+                <datalist id="userIds">
+                  <% customerList.forEach((customer) => { %>
+                    <option value="<%= customer.userTransactionId %>"><%= customer.userName %> - <%= customer.userTransactionId %></option>
+                  <% }) %>
+                </datalist>
             </div>
             <div class="transaction-card">
                 <input type="number" name="cost" id="cost" placeholder="e.g. 1200">

@@ -1,10 +1,12 @@
 const express=require('express')
-const colors=require('colors')
-const flash=require('connect-flash')
+const colors=require('colors')//to make my console beautiful
+const flash=require('connect-flash')//show error and success messages
 const session=require('express-session')
 const passport=require('passport')
-const mongodb_connection=require('./config/db')
-const dotenv=require('dotenv')
+const mongodb_connection=require('./config/db')//connection to the database itself
+//override form method and add DELETE or PUT
+const methodoverride=require('method-override')
+const dotenv=require('dotenv')//environmental varibales
 dotenv.config()
 //call the database
 mongodb_connection()
@@ -16,6 +18,7 @@ require('./config/passport')(passport)
 //set the view engine to EJS
 //middleware
 app.set('view engine','ejs')
+app.use(methodoverride('_method'))
 app.use(express.urlencoded({extended:false})) //to get data from the form with req.body
 app.use(session({
     secret:process.env.SECRET_KEY,
@@ -41,12 +44,13 @@ app.use((req,res,next)=>{
 app.use(express.static('public'))
 //routes
 const userInfo=require('./routes/userRoute')
+const { ensureAuthenticated } = require('./config/auth')
 
 
 
 //main route
-app.get('/',(req,res)=>{
-    res.render('index')
+app.get('/',ensureAuthenticated,(req,res)=>{
+    res.redirect('/dashboard')
 })
 
 //customer account dashboard
