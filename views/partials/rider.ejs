@@ -1,0 +1,114 @@
+<h1><%= transactionMsg %></h1>
+<div class="navbar">
+    <div class="logo">
+        <img src="./images/marketgologo.png" alt=""><sub><b>Market go</b></sub><sup style="font-size: 14px;">&reg;</sup>
+    </div>
+    <nav>
+        <ul>
+            <li><i class="fa fa-house-circle-check"></i> Home</li>
+            <li><i class="fa fa-table-columns"></i> Dashboard</li>
+            <li><i class="fa fa-swatchbook"></i> About</li>
+            <a href="/logout" style="color: #333;"><li><i class="fa fa-circle-xmark"></i> Logout</li></a>
+        </ul>
+    </nav>
+   </div>
+   
+<div class="main-container">
+    <!--<div class="logo">
+            <img src="./images/marketgologo.png" alt="">
+        </div>
+        <h1>Market Go. Buy. Pay Later</h1>-->
+
+    <div class="side-section">
+        <h2>Hi, <%= fname %></h2>
+        <br>
+        <p>Welcome to Marketgo. Below are you packages ready to go. Remember to download a list for the addressess.</p>
+        
+        <br>
+        <table>
+            <thead>
+                <tr>
+                    <th><i class="fa fa-bag-shopping"></i> Packages</th>
+                    <th><i class="fa fa-coins"></i> Income</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td><%= packages.length %></td>
+                    <td>KES. <%= budget %></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="side-section">
+        <h2><%= name %></h2>
+        <br>
+       <div class="section-menu">
+            
+            <p><i class="fa fa-ellipsis"></i> <br> Options</p>
+            <p><i class="fa fa-id-card-clip"></i> <br> <%= id %></p>
+       </div>
+        
+    </div>
+
+    <div class="side-section">
+        <h1><i class="fa fa-truck-fast"></i> Delivered</h1>
+        <p>Here are packages you have delievered.</p>
+        <br>
+        <!--previous transaction sections-->
+        <% if(custPurchases.length>0){ %>
+            <% custPurchases.forEach(function(order) { %>
+             <% if(order.isSigned){ %>
+                 <div class="transaction-card">
+                     <% const formatter = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); %>
+                     <p><i class="fa fa-circle-check"> </i> KES. <%= formatter.format(order.cost) %> - <%= order.retailerName %></p>
+                     
+                 </div>
+             <% } %>
+             <% }) %>
+         <% }else{ %>
+             <div class="transaction-card" style="box-shadow: none;">
+                 <p><i class="fa fa-circle-exclamation"></i> No deliveries</p>
+             </div>
+         <% } %>
+        <!--end of transaction sections-->
+        
+
+        
+    </div>
+    <div class="side-section">
+        <h1><i class="fa fa-bag-shopping"></i> Packages</h1>
+        <% if(packages.length>0){ %>
+           <% packages.forEach(function(package) { %>
+            
+            <div class="transaction-card">
+                
+                <p><i class="fa fa-basket-shopping"> </i> Package Id: <%= package.custId %>. Contains <%= package.orders.length %> items.</p>
+            </div>
+            
+            <% }) %>
+        <% }else{ %>
+            <div class="transaction-card" style="box-shadow: none;">
+                <p><i class="fa fa-basket-shopping"></i> No packages available</p>
+            </div>
+        <% } %>
+        
+        <a href="/delivery-list"><button class="btnCheckOut"><i class="fa fa-file-pdf"></i> Get List</button></a>
+    </div>
+
+   
+    
+</div>
+
+<div class="footer-menu">
+    
+    <ul>
+        
+        <li><a href="/contact-us"><img src="./images/tech-support.gif" alt=""></a></li>
+        <li><a href="/profile"><img src="./images/profile.gif" alt=""></a></li>
+        
+    </ul>
+
+</div>

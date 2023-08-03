@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Go - Buy - Pay Later</title>
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            color: rgb(202, 36, 36);
+            font-family: 'Montserrat', sans-serif;
+            text-align:center;
+            align-items: center;
+            justify-content: center;
+            height: 1;
+        }
+
+        .logo-img {
+            max-width: 200px;
+            height: auto;
+        }
+
+        .header {
+            font-size: 24px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .body-container {
+            padding: 20px;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            color:#333;
+            font-weight: 400;
+        }
+        .body-container>p>a{
+            font-weight: 700;
+            text-decoration:none;
+            font-size:13px;
+            color: rgb(202, 36, 36);
+            
+        }
+        .linkbtn{
+            padding: 10px 20px;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            color:#fff;
+            font-weight: 400;
+            font-size:16px;
+            border: none;
+            border-radius: 5px;
+            background-color: rgb(202, 36, 36);
+            margin-left: 40px;
+        }
+        .linkbtn>a{
+            text-decoration:none;
+            color:#fff;
+            font-weight: 400;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <center><img class="logo-img" src="https://github.com/tiprock-network/marketgo/blob/mpesa-twilio/public/images/marketgologo.png?raw=true" alt="Market Go Logo"></center>
+        <div class="header">Market Go . Buy . Pay Later</div>
+    </div>
+
+    <div class="body-container">
+        <p>Hi [USER NAME], below is a link for you to reset your password and regain access to your account. Kindly do not share this link with anyone else. The link will be available for <b><i>15 minutes.</i></b></p>
+        <button class="linkbtn"><a href="[LINK HERE]">Reset Password</a></button>
+        OR you can use the link below
+        <p><a href="[LINK HERE]">[LINK HERE]</a></p>
+    </div>
+</body>
+</html>

@@ -1,17 +1,27 @@
 <% if(typeof errs !='undefined') { %>
     <% errs.forEach(function(error){ %>
-        <%= error.message %>
+        <div class="err-msg">
+            <p><i class="fa fa-circle-exclamation"></i> <%= error.message %></p>
+        </div>
     <% }) %>
 <% } %>
 
 <% if(success_msg != ''){ %>
-    <%= success_msg %>
+    <div class="success-msg">
+        <p><i class="fa fa-circle-exclamation"></i> <%= success_msg %></p>
+    </div>
 <% } %>
 
 <% if(error_msg != ''){ %>
-    <%= error_msg %>
+    <div class="err-msg">
+        <p><i class="fa fa-circle-exclamation"></i> <%= error_msg %></p>
+    </div>
+    
 <% } %>
 
 <% if(error != ''){ %>
-    <%= error %>
+    
+    <div class="err-msg">
+        <p><i class="fa fa-circle-exclamation"></i> <%= error %></p>
+    </div>
 <% } %>
