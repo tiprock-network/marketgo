@@ -60,7 +60,7 @@ app.use('/dashboard',userInfo)
 app.use('/',userInfo)
 
 //the port of http server
-const PORT=process.env.PORT||5001
+const PORT=process.env.PORT||5201
 
 app.listen(PORT,()=>{
     console.log(`App server started on PORT: ${PORT}...`)
