@@ -458,6 +458,15 @@ body{
     object-fit: cover;
 }
 
+ .large-screen-footer{
+        display: block;
+    }
+    .small-screen-footer{
+        display: none;
+        
+        
+    }
+
 .fa-circle-check{
     color: rgb(18, 139, 93);
 }
