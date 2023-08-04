@@ -944,7 +944,7 @@ router.post('/resetlink',async (req,res,next)=>{
             const token=jwt.sign(payload, secret, {expiresIn:'15m'})
 
             //generate reset link
-            const reset_link=`http://${process.env.HOST_NAME}:${process.env.PORT}/resetpassword/${checkUser.userTransactionId}/${token}`;
+            const reset_link=`${process.env.HOST_NAME}/resetpassword/${checkUser.userTransactionId}/${token}`;
             //user name
             const uname=checkUser.userName
             //send email using nodemailer with reset link
