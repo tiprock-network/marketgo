@@ -52,5 +52,5 @@ jobs:
         with:
           app-name: 'marketgo'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_B013FBBC940041C3A8C74E2352D4BC5E }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_50F86E6280B54D2987ACFA5088213CB6 }}
           package: .
