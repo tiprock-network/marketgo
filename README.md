@@ -1,4 +1,8 @@
 # Market Go
+## Technologies
+* MongoDB for Database
+* NodeJS
+* Azure for Deployment
 ## Login Page
 ![MarketGo Login](https://github.com/tiprock-network/marketgo/blob/main/public/images/Screenshot%202023-07-22%20193709.png?raw=true)
 
